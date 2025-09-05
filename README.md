@@ -8,3 +8,4 @@ This is an app designed to help me solve my budgeting issues. I noticed my salar
 * __Hono__ - used for authentication with **Clerk Auth**
 * __Shadcn-ui__ - used to design the button and sheet components
 
+

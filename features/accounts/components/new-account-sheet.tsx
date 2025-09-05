@@ -9,7 +9,7 @@ import { useNewAccount } from "../hooks/use-new-account"
 import { AccountForm } from "./account-form";
 import { insertAccountSchema } from "@/database/schema";
 import { z } from "zod/v4";
-import { useCreateAccount } from "../hooks/use-create-accounts";
+import { useCreateAccount } from "../api/use-create-accounts";
 
 const formSchema = insertAccountSchema.pick({name:true});
 type FormValues = z.input<typeof formSchema>;
