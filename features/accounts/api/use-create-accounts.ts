@@ -18,7 +18,8 @@ export const useCreateAccount = () => {
             toast.success("Account created");
             queryClient.invalidateQueries({ queryKey: ["accounts"]});
             
-        },onError: () =>{
+        },onError: (error) =>{
+            console.error("Internal error", error)
             toast.error("Internal error");
         }
     });
