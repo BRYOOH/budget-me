@@ -55,7 +55,7 @@ export const AccountForm = ({
                 render={({ field}) => (
                     <FormItem>
                         <FormLabel> 
-                            Name
+                            Name 
                         </FormLabel>
                         <FormControl>
                             <Input disabled={disabled} 
