@@ -6,13 +6,14 @@ import {
     SheetTitle
 } from "@/components/ui/sheet"
 import { useOpenAccount } from "../hooks/use-open-account";
-import { useCreateAccount } from "../api/use-create-accounts";
 import { useGetAccount } from "../api/use-get-account";
+import { useEditAccount } from "../api/use-edit-accounts";
 
 import { AccountForm } from "./account-form";
 import { insertAccountSchema } from "@/database/schema";
 import { z } from "zod/v4";
 import { Loader2 } from "lucide-react";
+import { useDeleteAccount } from "../api/use-delete-account";
 
 const formSchema = insertAccountSchema.pick({name:true});
 type FormValues = z.input<typeof formSchema>;
@@ -21,8 +22,10 @@ export const EditAccountSheet = () =>{
     const { isOpen, onClose,id } = useOpenAccount();
 
     const accountQuery = useGetAccount(id);
-    const mutation = useCreateAccount();
+    const mutation = useEditAccount(id);
+    const deleteMutation = useDeleteAccount(id);
 
+    const isPending  = mutation.isPending || deleteMutation.isPending ;
     const isLoading = accountQuery.isLoading;
    
     const onSubmit = ( values : FormValues) => {
@@ -57,8 +60,10 @@ export const EditAccountSheet = () =>{
                 <AccountForm 
                 id={id}
                 onSubmit={onSubmit} 
-                disabled={mutation.isPending} 
-                defaultValues={defaultValues}/> }
+                disabled={isPending} 
+                defaultValues={defaultValues}
+                onDelete={ () => deleteMutation.mutate()}
+                /> }
                 
             </SheetContent>
         </Sheet>
