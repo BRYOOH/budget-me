@@ -15,6 +15,20 @@
       "when": 1754478839653,
       "tag": "0001_sleepy_obadiah_stane",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1759900846717,
+      "tag": "0002_charming_lester",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760402842021,
+      "tag": "0003_bouncy_eddie_brock",
+      "breakpoints": true
     }
   ]
 }
