@@ -13,8 +13,8 @@ const links = [
         label: "Overview"
     },
     {
-        href:'/transitions',
-        label: "Transitions"
+        href:'/transactions',
+        label: "Transactions"
     },
     {
         href:'/accounts',

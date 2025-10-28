@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { insertAccountSchema } from "@/database/schema";
+import { insertTransactionsSchema } from "@/database/schema";
 import {
     Form,
     FormControl,
@@ -15,7 +15,7 @@ import {
     FormMessage
 } from "@/components/ui/form"
 
-const formSchema = insertAccountSchema.pick({name:true});
+const formSchema = insertTransactionsSchema.pick({id:true});
 
 type FormValues = z.input<typeof formSchema>;
 
@@ -27,7 +27,7 @@ type Props = {
     disabled?: boolean;
 };
 
-export const AccountForm = ({
+export const TransactionForm = ({
     id,
     defaultValues,
     onSubmit,
@@ -66,11 +66,11 @@ export const AccountForm = ({
                     </FormItem>
                 )}/>
             <Button className="w-full" type="submit">
-                { id ? "Save changes" : "Create Account"}
+                { id ? "Save changes" : "Create Transaction"}
             </Button>
             { !!id && <Button type="button" disabled={disabled} onClick={handleDelete} className="w-full" variant="outline">
                 <Trash className="size-4 mr-2"/>
-                Delete account
+                Delete Transaction
             </Button>}
             </form>
         </Form>
