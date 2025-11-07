@@ -3,9 +3,12 @@ import { z } from "zod/v4";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+
+import { Select } from "@/app/components/select";
 import { insertTransactionsSchema } from "@/database/schema";
+
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
     Form,
     FormControl,
@@ -15,16 +18,32 @@ import {
     FormMessage
 } from "@/components/ui/form"
 
-const formSchema = insertTransactionsSchema.pick({id:true});
+const formSchema = z.object({
+    date: z.coerce.date(),
+    accountId: z.string(),
+    categoryId: z.string().nullable().optional(),
+    payee: z.string(),
+    amount: z.string(),
+    notes: z.string().nullable().optional(),
+});
+
+const apiSchema = insertTransactionsSchema.omit({
+    id:true,
+});
 
 type FormValues = z.input<typeof formSchema>;
+type ApiFormValues = z.input<typeof apiSchema>;
 
 type Props = {
     id?: string;
     defaultValues?: FormValues;
-    onSubmit: (values: FormValues) => void;
+    onSubmit: (values: ApiFormValues) => void;
     onDelete?: () => void;
     disabled?: boolean;
+    accountOptions: { label:string; value:string;}[];
+    categoryOptions: { label:string; value:string;}[];
+    onCreateAccount: (name:string)=> void;
+    onCreateCategory: (name:string)=> void;
 };
 
 export const TransactionForm = ({
@@ -32,7 +51,11 @@ export const TransactionForm = ({
     defaultValues,
     onSubmit,
     onDelete,
-    disabled
+    disabled,
+    accountOptions,
+    categoryOptions,
+    onCreateAccount,
+    onCreateCategory,
 }: Props) => {
 
     const form = useForm<FormValues>({
@@ -41,7 +64,7 @@ export const TransactionForm = ({
     });
 
     const handleSubmit = (values: FormValues) =>{
-        onSubmit(values);
+        console.log({ values });
     }
      
     const handleDelete = () =>{
@@ -51,16 +74,53 @@ export const TransactionForm = ({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pt-4">
-                <FormField name="name" control={form.control} 
+                <FormField name="date" 
+                control={form.control} 
+                render={({ field}) => (
+                    <FormItem>
+                        <FormControl>
+                            <DatePicker
+                            value={field.value as Date | undefined}
+                            onChange={field.onChange}
+                            disabled={disabled}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}/>
+                <FormField name="accountId" 
+                control={form.control} 
                 render={({ field}) => (
                     <FormItem>
                         <FormLabel> 
-                            Name 
+                            Account 
                         </FormLabel>
                         <FormControl>
-                            <Input disabled={disabled} 
-                            placeholder="e.g. Cash, Bank, Credit Card"
-                            {...field}
+                            <Select
+                            placeholder="Select an account"
+                            options={accountOptions}
+                            onCreate={onCreateAccount}
+                            value={field.value}
+                            onChange={field.onChange}
+                            disabled={disabled}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}/>
+                <FormField name="categoryId" 
+                control={form.control} 
+                render={({ field}) => (
+                    <FormItem>
+                        <FormLabel> 
+                            Category
+                        </FormLabel>
+                        <FormControl>
+                            <Select
+                            placeholder="Select a category"
+                            options={accountOptions}
+                            onCreate={onCreateAccount}
+                            value={field.value}
+                            onChange={field.onChange}
+                            disabled={disabled}
                             />
                         </FormControl>
                     </FormItem>
@@ -68,7 +128,11 @@ export const TransactionForm = ({
             <Button className="w-full" type="submit">
                 { id ? "Save changes" : "Create Transaction"}
             </Button>
-            { !!id && <Button type="button" disabled={disabled} onClick={handleDelete} className="w-full" variant="outline">
+            { !!id && <Button type="button" 
+            disabled={disabled} 
+            onClick={handleDelete} 
+            className="w-full" 
+            variant="outline">
                 <Trash className="size-4 mr-2"/>
                 Delete Transaction
             </Button>}
