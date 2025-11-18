@@ -56,5 +56,6 @@ export const transactionRelations = relations(transactions, ({one}) => ({
 
 export const insertTransactionsSchema = createInsertSchema(transactions,{
     date: z.coerce.date(),
+    categoryId:z.string().nullable().optional(),
 });
  

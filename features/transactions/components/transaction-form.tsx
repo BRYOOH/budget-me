@@ -5,10 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Select } from "@/app/components/select";
+import { DatePicker } from "@/app/components/date-picker";
 import { insertTransactionsSchema } from "@/database/schema";
 
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
+import { AmountInput } from "@/app/components/amount-input";
 import {
     Form,
     FormControl,
@@ -17,6 +18,9 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { convertAmountToMilliUnits } from "@/lib/utils";
 
 const formSchema = z.object({
     date: z.coerce.date(),
@@ -64,8 +68,13 @@ export const TransactionForm = ({
     });
 
     const handleSubmit = (values: FormValues) =>{
-        console.log({ values });
-    }
+        const amount = parseFloat(values.amount);
+        const amountInMilliunits = convertAmountToMilliUnits(amount);
+        onSubmit({
+            ...values,
+            amount: amountInMilliunits,
+        });
+    }; 
      
     const handleDelete = () =>{
         onDelete?.();
@@ -116,11 +125,60 @@ export const TransactionForm = ({
                         <FormControl>
                             <Select
                             placeholder="Select a category"
-                            options={accountOptions}
-                            onCreate={onCreateAccount}
+                            options={categoryOptions}
+                            onCreate={onCreateCategory}
                             value={field.value}
                             onChange={field.onChange}
                             disabled={disabled}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}/>
+                 <FormField name="payee" 
+                control={form.control} 
+                render={({ field}) => (
+                    <FormItem>
+                        <FormLabel> 
+                           Payee
+                        </FormLabel>
+                        <FormControl>
+                            <Input 
+                            disabled={disabled}
+                            placeholder="Add a payee"
+                            {...field}
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}/>
+                <FormField name="amount" 
+                control={form.control} 
+                render={({ field}) => (
+                    <FormItem>
+                        <FormLabel> 
+                            Amount
+                        </FormLabel>
+                        <FormControl>
+                            <AmountInput 
+                            {...field}
+                            disabled={disabled}
+                            placeholder="0.00"
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}/>
+                <FormField name="notes" 
+                control={form.control} 
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel> 
+                           Payee
+                        </FormLabel>
+                        <FormControl>
+                            <Textarea 
+                             {...field}
+                             value={ field.value ?? ""}
+                            disabled={disabled}
+                            placeholder="Optional notes"
                             />
                         </FormControl>
                     </FormItem>
