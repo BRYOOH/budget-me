@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Select } from "@/app/components/select";
-import { DatePicker } from "@/app/components/date-picker";
 import { insertTransactionsSchema } from "@/database/schema";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { convertAmountToMilliUnits } from "@/lib/utils";
@@ -82,7 +82,7 @@ export const TransactionForm = ({
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pt-4">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pt-4 mx-4">
                 <FormField name="date" 
                 control={form.control} 
                 render={({ field}) => (

@@ -25,7 +25,7 @@ import { Popover,
 
     return(
     <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
             <Button
             disabled={disabled}
             variant="outline"
@@ -38,7 +38,7 @@ import { Popover,
                 {value ? format(value,"PPP"): <span>Pick a date</span>}
             </Button>        
         </PopoverTrigger>
-        <PopoverContent>
+        <PopoverContent className="w-auto p-0 z-50">
             <Calendar
             mode="single"
             selected={value}
