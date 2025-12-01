@@ -5,28 +5,63 @@ import {
     SheetHeader, 
     SheetTitle
 } from "@/components/ui/sheet"
-import { useOpenAccount } from "../hooks/use-open-account";
-import { useGetAccount } from "../api/use-get-account";
-import { useEditAccount } from "../api/use-edit-accounts";
 
-import { AccountForm } from "./account-form";
-import { insertAccountSchema } from "@/database/schema";
+import { useOpenTransaction } from "../hooks/use-open-transaction";
+import { useGetTransaction } from "../api/use-get-transaction";
+import { useEditTransaction } from "../api/use-edit-transaction";
+import { useDeleteTransaction } from "../api/use-delete-transaction";
+
+import { useGetCategories } from "@/features/categories/api/use-get-categories";
+import { useCreateCategory } from "@/features/categories/api/use-create-category";
+import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
+import { useCreateAccount } from "@/features/accounts/api/use-create-accounts";
+
+import { TransactionForm } from "./transaction-form";
+import { insertTransactionsSchema } from "@/database/schema";
 import { z } from "zod/v4";
 import { Loader2 } from "lucide-react";
-import { useDeleteAccount } from "../api/use-delete-account";
+import { useConfirm } from "@/hooks/use-confirm";
 
-const formSchema = insertAccountSchema.pick({name:true});
+
+const formSchema = insertTransactionsSchema.omit({id:true});
 type FormValues = z.input<typeof formSchema>;
 
-export const EditAccountSheet = () =>{
-    const { isOpen, onClose,id } = useOpenAccount();
+export const EditTransactionSheet = () =>{
+    const { isOpen, onClose,id } = useOpenTransaction();
 
-    const accountQuery = useGetAccount(id);
-    const mutation = useEditAccount(id);
-    const deleteMutation = useDeleteAccount(id);
+    const [ConfirmDialog, confirm] = useConfirm(
+        "Are you sure ?",
+        "You are about to delete this Transaction."
+    )
 
-    const isPending  = mutation.isPending || deleteMutation.isPending ;
-    const isLoading = accountQuery.isLoading;
+    const transactionQuery = useGetTransaction(id);
+    const mutation = useEditTransaction(id);
+    const deleteMutation = useDeleteTransaction(id);
+
+     const categoryQuery = useGetCategories();
+       const categoryMutation = useCreateCategory();
+       const onCreateCategory = (name:string) => categoryMutation.mutate({name});
+       const categoryOptions = (categoryQuery.data ?? []).map((category)=>({
+        label:category.name,
+        value: category.id,
+       }));
+    
+       const accountQuery = useGetAccounts();
+       const accountMutation = useCreateAccount();
+       const onCreateAccount = (name:string) => accountMutation.mutate({name});
+       const accountOptions = (accountQuery.data ?? []).map((account)=>({
+        label:account.name,
+        value:account.id,
+       }));
+
+    const isPending  = mutation.isPending || 
+                      deleteMutation.isPending ||
+                      transactionQuery.isPending ||
+                      categoryMutation.isPending ||
+                      accountMutation.isPending;
+    const isLoading = transactionQuery.isLoading ||
+                       categoryQuery.isLoading ||
+                       accountQuery.isLoading;
    
     const onSubmit = ( values : FormValues) => {
        mutation.mutate(values, {
@@ -36,36 +71,67 @@ export const EditAccountSheet = () =>{
         }); 
     };
 
-     const defaultValues = accountQuery.data ? {
-        name:accountQuery.data.name
+    const onDelete = async () => {
+        const ok = await confirm();
+
+        if(ok){
+            deleteMutation.mutate(undefined, {
+                onSuccess: () => {
+                    onClose();
+                }
+            })
+        }
+    };
+
+     const defaultValues = transactionQuery.data ? {
+        accountId: transactionQuery.data.accountId,
+        categoryId: transactionQuery.data.categoryId,
+        amount: transactionQuery.data.amount.toString(),
+        date: transactionQuery.data.date 
+        ? new Date(transactionQuery.data.date)
+        : new Date(),
+        payee: transactionQuery.data.payee,
+        notes: transactionQuery.data.notes,
      }: {
-        name: ""
+       accountId: "",
+       categoryId: "",
+       amount: "",
+       date: new Date(),
+       payee: "",
+       notes: "",
      };
 
     return (
+       <>
+       <ConfirmDialog/>
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent className="space-y-4">
                 <SheetHeader>
                     <SheetTitle>
-                    Edit Account
+                    Edit Transaction
                     </SheetTitle>
                     <SheetDescription>
-                    Edit an existing account
+                    Edit an existing Transaction
                     </SheetDescription>
                 </SheetHeader>
                 {isLoading ?
                 (<div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="size-4 text-muted-foreground animate-spin"/>
                 </div>): 
-                <AccountForm 
+                <TransactionForm 
                 id={id}
-                onSubmit={onSubmit} 
-                disabled={isPending} 
                 defaultValues={defaultValues}
-                onDelete={ () => deleteMutation.mutate()}
+                onSubmit={onSubmit}
+                onDelete={onDelete}
+                disabled= {isPending}
+                categoryOptions={categoryOptions}
+                onCreateCategory = {onCreateCategory}
+                accountOptions = {accountOptions}
+                onCreateAccount={ onCreateAccount}
                 /> }
                 
             </SheetContent>
         </Sheet>
+       </>
     )
 }
