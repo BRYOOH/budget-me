@@ -1,2 +1,11 @@
 {
+    "editor.inlineSuggest.edits.allowCodeShifting": "never",
+    "editor.inlineSuggest.edits.renderSideBySide": "never",
+    "editor.inlineSuggest.edits.showLongDistanceHint": false,
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.inlineSuggest.enabled": false,
+    "editor.quickSuggestions": {
+        "comments": "on",
+        "strings": "on"
+    }
 }
