@@ -23,7 +23,7 @@ export default function ImportTable({
   body,
   selectedColumns,
   onTableHeadSelectChange
-}:any) {
+}:Props) {
   return (
     <div className="rounded-md border overflow-hidden">
     <Table>

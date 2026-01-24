@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // This component renders a card for importing transactions from a CSV file. It displays the data in a table format and outlines the page outline after uploading the file.
 import { useState } from "react";
-import { format, parse } from "date-fns";
 
 import { convertAmountToMilliUnits } from "@/lib/utils";
 
@@ -16,7 +15,6 @@ import { Button } from "@/components/ui/button";
 
 import ImportTable from "./import-table";
 
-const dateFormat = "yyyy-MM-dd HH:mm:ss";
  
 const requiredOptions = [
 "amount",
@@ -46,7 +44,6 @@ const ImportCard = ({
     const body = data.slice(1);
 
     //The onTableHeadSelectChange is used to sort the table columns with the requiredOptions above.
-    //You can only sort one column head with one requiredOptions after it is selected it cannot be selected again. Until you unselect 
     const onTableHeadSelectChange = (
       columnIndex: number,
       value: string | null
@@ -54,6 +51,7 @@ const ImportCard = ({
       setSelectedColumns((prev) => {
         const newSelectedColumns  = { ...prev};
 
+         //You can only sort one column head with one requiredOptions after it is selected it cannot be selected again. Until you unselect 
         for ( const key in newSelectedColumns) {
           if(newSelectedColumns[key] ===value){
               newSelectedColumns[key] = null;
@@ -69,7 +67,7 @@ const ImportCard = ({
       });
     }
 
-    //(TODO): The progress is used to
+    //(TODO): The progress is used to convert values to an array then counts the columns selected
     const progress = Object.values(selectedColumns).filter(Boolean).length;
 
     //Used to sort the data in a structed format in the table
@@ -87,8 +85,8 @@ const ImportCard = ({
           }),
           body:body.map((row) =>{
             const transformedRow = row.map((cell,index) =>{
-              const columnIndex = getColumnIndex(`column_${index}`);
-              return selectedColumns[`column_${columnIndex}`] ? cell : null;
+            const columnIndex = getColumnIndex(`column_${index}`);
+            return selectedColumns[`column_${columnIndex}`] ? cell : null;
             }); // Returns the cell with the body data
 
             return transformedRow.every((item) => item === null) ? [] : transformedRow;
@@ -105,7 +103,7 @@ const ImportCard = ({
              }
 
              return acc;
-          }, {}); //Returns an array of data with columns that are not null to be sent to the backend
+          }, {}); //Returns an object of data with columns that are not null to be sent to the backend
         });
 
         console.log("arrayOfData",{arrayOfData});
@@ -115,19 +113,12 @@ const ImportCard = ({
         .map((item) =>{
           const rawDate = String(item.date).trim();
 
-          const parseDate = parse(
-            rawDate,
-            dateFormat,
-            new Date()
-          );
-
-          console.log("parseDate",{parseDate});
+          console.log("rawDate", rawDate);
 
           return {
-             // parseDate date is used to change the amount and date to acceptable format for the database
           ...item, 
           amount: convertAmountToMilliUnits(parseFloat(item.amount)),
-          date: parseDate
+          date: rawDate
           };
         })
         // before the error - format(parse(item.date, dateFormat, new Date()),outputFormat)
@@ -140,7 +131,7 @@ const ImportCard = ({
     // ({  // Formatted date is used to change the amount and date to acceptable format for the database
     //       ...item, 
     //       amount: convertAmountToMilliUnits(parseFloat(item.amount)),
-    //       date: format(parse(item.date, dateFormat, new Date()),outputFormat)
+    //       date: format(parse(rawDate, dateFormat, new Date()),outputFormat)
     //     }));
   return (
      <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
