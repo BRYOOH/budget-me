@@ -57,7 +57,7 @@ export default function TransactionPage() {
     
     const isDisabled = transactionQuery.isLoading || deleteTransaction.isPending;
     
-    const onSubmitImport = async ( //(TODO): Explain the onSubmitImport
+    const onSubmitImport = async ( //Receives validated imported transactions and saves them to the database
           values: typeof transactionsSchema.$inferInsert[],
     ) => {
       const accountId = await confirm(); // Requests the account from the user 

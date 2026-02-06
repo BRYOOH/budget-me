@@ -15,7 +15,7 @@ export const useEditTransaction = (id?:string) => {
             const response = await client.api.transactions[":id"]["$patch"]({ json, param: {id} });
             return await response.json(); 
         },onSuccess: () =>{
-            toast.success("=Transaction updated");
+            toast.success("Transaction updated");
             queryClient.invalidateQueries({ queryKey: ["transaction", {id}]});
              queryClient.invalidateQueries({ queryKey: ["transactions"]});
              //TODO: Invalidate summary

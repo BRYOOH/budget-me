@@ -67,7 +67,7 @@ const ImportCard = ({
       });
     }
 
-    //(TODO): The progress is used to convert values to an array then counts the columns selected
+    //The progress is used to convert values to an array then counts the columns selected
     const progress = Object.values(selectedColumns).filter(Boolean).length;
 
     //Used to sort the data in a structed format in the table
