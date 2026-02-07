@@ -34,6 +34,7 @@ export function calculatePercentageChange(
    return ((current-previous) /previous) * 100;
 };
 
+//Returns a continuous daily dataset (perfect for charts, reports, analytics)
 export function fillMissingDays(
    activeDays:{
       date:Date,
@@ -43,7 +44,6 @@ export function fillMissingDays(
    startDate: Date,
    endDate:Date,
 ){
-
    if(activeDays.length === 0){
       return [];
    }
@@ -91,5 +91,23 @@ export function formatDateRange (period?:Period){
 
    return format(period.from, "LLL dd, y");
 }
+
+//(TODO): Explain the formatPercentage
+export function formatPercentage (
+   value: number,
+   options: { addPrefix?: boolean} = {
+      addPrefix: false,
+   },
+){
+   const result = new Intl.NumberFormat("en-US", {
+      style: "percent"
+   }).format(value / 100);
+ 
+   if(options.addPrefix && value > 0){
+      return `+${result}`;
+   }
+
+   return result;
+};
 
 

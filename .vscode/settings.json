@@ -1,11 +1,13 @@
 {
-    "editor.inlineSuggest.edits.allowCodeShifting": "never",
-    "editor.inlineSuggest.edits.renderSideBySide": "never",
-    "editor.inlineSuggest.edits.showLongDistanceHint": false,
+    "editor.inlineSuggest.edits.allowCodeShifting": "always",
+    "editor.inlineSuggest.edits.renderSideBySide": "auto",
+    "editor.inlineSuggest.edits.showLongDistanceHint": true,
     "editor.suggestOnTriggerCharacters": false,
     "editor.inlineSuggest.enabled": false,
     "editor.quickSuggestions": {
         "comments": "on",
         "strings": "on"
-    }
+    },
+    "editor.inlineSuggest.edits.showCollapsed": true,
+    "editor.tabCompletion": "onlySnippets"
 }
