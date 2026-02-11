@@ -98,8 +98,8 @@ export default function DataCard({
                 />
             </h1>
             <p className={cn("text-muted-foreground text-sm line-clamp-1", percentageChange > 0 && "text-emerald-500",percentageChange < 0 && "text-rose-500")}>
-                {formatPercentage(percentageChange)} from last period
-            </p>
+                {formatPercentage(percentageChange, { addPrefix: true /*Add prefix adds the positive or negative sign*/})} from last period 
+            </p> 
         </CardContent>
     </Card>
   )
