@@ -88,7 +88,8 @@ export default function DataCard({
         </CardHeader>
         <CardContent>
             <h1 className='font-bold text-2xl mb-2 line-clamp-1 break-all'>
-                <CountUp //Used tocreate a sleeek animation of counting pfrom 0 to a certain value
+                {/*Used to create a sleeek animation of counting from 0 to a certain value */}
+                <CountUp 
                 preserveValue
                 start={0}
                 end={value}

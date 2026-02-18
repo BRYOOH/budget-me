@@ -75,24 +75,26 @@ to: string | Date |undefined;
 from: string | Date| undefined;
 };
 
-//(TODO): Explain the formatDateRange line after line the imports are all from date-fns
 //FormatDateRange is used to create a range btw two dates 
 export function formatDateRange (period?:Period){
    const defaultTo = new Date();
    const defaultFrom = subDays(defaultTo,30);
 
+   //If no period was given use the default values
    if(!period?.from){
       return `${format(defaultFrom, "LLL dd")} - ${format(defaultTo,"LLL dd, y")}`;
    }
 
+   //If the period is present then use it
    if(period.to){
       return `${format(period.from, "LLL dd ")} - ${format(period.to,"LLL dd, y")}`;
    }
 
+   //If Only from Exists no to
    return format(period.from, "LLL dd, y");
 }
 
-//(TODO): Explain the formatPercentage
+//Converts the value to a percentage
 export function formatPercentage (
    value: number,
    options: { addPrefix?: boolean} = {
