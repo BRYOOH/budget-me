@@ -3,6 +3,8 @@ import HeaderLogo from "./HeaderLogo";
 import Navigation from "./Navigation";
 import { Loader2 } from "lucide-react";
 import WelcomeMsg from "./WelcomeMsg";
+import { Filters } from "./filters";
+import { Suspense } from "react";
 
 export default function Header() {
   return (
@@ -21,6 +23,9 @@ export default function Header() {
               </ClerkLoaded>
             </div>
             <WelcomeMsg/>
+            <Suspense fallback={null}>
+              <Filters/>
+            </Suspense>
         </div> 
     </header>
   )

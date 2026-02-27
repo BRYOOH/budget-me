@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+
 //Renders a dropdown menu select for the table head columns
 import {
   Select,

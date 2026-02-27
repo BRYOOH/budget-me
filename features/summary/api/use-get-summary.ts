@@ -17,7 +17,7 @@ export const useGetSummary = () =>{
                 query:{
                     from,
                     to,
-                    accountId
+                    accountId 
                 }
             });
 
